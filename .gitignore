@@ -1,0 +1,14 @@
+node_modules
+package-lock.json
+packages/*/dist
+packages/*/package-lock.json
+.DS_STORE
+.idea
+
+.npmrc
+.env
+
+yarn-error.log
+.vscode
+dist
+coverage

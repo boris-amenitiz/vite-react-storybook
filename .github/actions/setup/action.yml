@@ -1,0 +1,25 @@
+name: Setup App
+description: Node setup and packages installation
+inputs:
+  NPMRC_TOKEN:
+    description: "Token used in .npmrc file"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version-file: ".nvmrc"
+        registry-url: "https://npm.pkg.github.com"
+        always-auth: true
+        scope: "@amenitiz"
+        cache: "yarn"
+    - name: Yarn install
+      shell: bash
+      run: yarn run ci
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.NPMRC_TOKEN }}
+    - name: Registry
+      shell: bash
+      run: yarn config list

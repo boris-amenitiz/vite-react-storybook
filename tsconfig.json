@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "alwaysStrict": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "lib": ["es6", "dom"],
+    "module": "es6",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es5",
+    "types": ["jest", "@testing-library/jest-dom", "vite/client"],
+    "paths": {
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@root/*": ["src/*"],
+      "@stories/*": ["stories/*"],
+      "@styles/*": ["src/styles/*"],
+      "@tests/*": ["tests/*"],
+      "@utils/*": ["src/utils/*"]
+    }
+  },
+  "include": ["./packages", "*.d.ts", "src"],
+  "exclude": ["node_modules", "dist"]
+}

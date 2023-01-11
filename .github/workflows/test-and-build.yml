@@ -1,0 +1,65 @@
+name: Test and Build
+on: [push]
+jobs:
+  code-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          NPMRC_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prettier check
+        run: npx prettier --check .
+      - name: ESLint check
+        run: npx eslint
+
+  jest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          NPMRC_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Jest coverage report
+        run: yarn test -- --coverage
+      - name: Upload coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-${{ github.ref_name }}
+          path: coverage/clover.xml
+      - uses: ArtiomTr/jest-coverage-report-action@v2
+        id: coverage
+        with:
+          output: report-markdown
+      - uses: jwalton/gh-find-current-pr@v1
+        id: finder
+      - name: Sticky Pull Request Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ steps.finder.outputs.pr }}
+          message: ${{ steps.coverage.outputs.report }}
+
+  release:
+    needs: [code-analysis, jest]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          NPMRC_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build
+        env:
+          NODE_ENV: production
+        run: yarn run build
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
